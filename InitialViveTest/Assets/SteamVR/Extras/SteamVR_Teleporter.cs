@@ -105,6 +105,8 @@ public class SteamVR_Teleporter : MonoBehaviour
         lr.endWidth = 0.1f;
         lr.SetPosition(0, start);
         lr.SetPosition(1, end);
+        lr.startColor = Color.blue;
+        lr.endColor = Color.blue;
     }
 }
 
