@@ -73,6 +73,7 @@ public class SteamVR_Teleporter : MonoBehaviour
 				RaycastHit hitInfo;
 				hasGroundTarget = Physics.Raycast(ray, out hitInfo);
 				dist = hitInfo.distance;
+                drawLine(transform.position, hitInfo.collider.transform.position);
 			}
 			else // If we're just staying flat on the current Y axis
 			{
@@ -94,5 +95,16 @@ public class SteamVR_Teleporter : MonoBehaviour
 			}
 		}
 	}
+
+    private void drawLine(Vector3 start, Vector3 end) {
+        GameObject myLine = new GameObject();
+        myLine.transform.position = start;
+        myLine.AddComponent<LineRenderer>();
+        LineRenderer lr = myLine.GetComponent<LineRenderer>();
+        lr.startWidth = 0.1f;
+        lr.endWidth = 0.1f;
+        lr.SetPosition(0, start);
+        lr.SetPosition(1, end);
+    }
 }
 
