@@ -324,7 +324,7 @@ namespace Valve.VR.InteractionSystem
 			bool pointerAtBadAngle = false;
 			if ( ( dotForward > 0 && dotUp > 0.75f ) || ( dotForward < 0.0f && dotUp > 0.5f ) )
 			{
-				pointerAtBadAngle = true;
+				//pointerAtBadAngle = true;
 			}
 
 			//Trace to see if the pointer hit anything
@@ -647,7 +647,7 @@ namespace Valve.VR.InteractionSystem
 			{
 				if ( teleportMarker != null && teleportMarker.markerActive && teleportMarker.gameObject != null )
 				{
-					teleportMarker.gameObject.SetActive( false );
+					//if(teleportMarker.gameObject.tag != "Terrain") teleportMarker.gameObject.SetActive( false );
 				}
 			}
 
@@ -877,8 +877,10 @@ namespace Valve.VR.InteractionSystem
 			{
 				if ( floorFixupMaximumTraceDistance > 0.0f )
 				{
-					RaycastHit raycastHit;
-					if ( Physics.Raycast( teleportPosition + 0.05f * Vector3.down, Vector3.down, out raycastHit, floorFixupMaximumTraceDistance, floorFixupTraceLayerMask ) )
+                    RaycastHit raycastHit;
+                    TerrainCollider tc = Terrain.activeTerrain.GetComponent<TerrainCollider>();
+                    Ray ray = new Ray(teleportPosition + 0.05f * Vector3.down, Vector3.down);
+                    if (tc && tc.Raycast(ray, out raycastHit, floorFixupMaximumTraceDistance) )
 					{
 						teleportPosition = raycastHit.point;
 					}
