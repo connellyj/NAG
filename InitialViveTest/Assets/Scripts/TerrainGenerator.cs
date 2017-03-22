@@ -5,25 +5,25 @@ using Valve.VR.InteractionSystem;
 
 public class TerrainGenerator : MonoBehaviour
 {
-    public float gridSize;
-    public float unloadDistance;
-    public float minDisplayDistance;
     public int maxWorldDimension;
-    public float tileHeight;
-    public float tileWidth;
     public float maxHeight;
     public int heightMapResolution;
+    public float perlinSampleSize;
     public Transform playerTransform;
 
     private float[,][,] heights;
     private Zone[,] zones;
     private bool isLoading = false;
     private bool isUnloading = false;
+    private float gridSize;
+    private float unloadDistance;
+    private float minDisplayDistance;
 
     private class Zone
     {
         public bool loaded = false;
         public Terrain terrain;
+        public GameObject root;
         public int xBase;
         public int yBase;
     }
@@ -39,11 +39,16 @@ public class TerrainGenerator : MonoBehaviour
             }
         }
         TerrainData modelTerrainData = new TerrainData();
-        modelTerrainData.size = new Vector3(tileWidth, maxHeight, tileHeight);
         modelTerrainData.heightmapResolution = heightMapResolution;
+        modelTerrainData.size = new Vector3(modelTerrainData.size.x, maxHeight, modelTerrainData.size.z);
         int height = modelTerrainData.heightmapHeight;
         int width = modelTerrainData.heightmapWidth;
         heights = new float[maxWorldDimension, maxWorldDimension][,];
+        gridSize = modelTerrainData.size.x;
+        unloadDistance = gridSize * 1.8f;
+        minDisplayDistance = gridSize * 0.7f;
+        int xIterations = 0;
+        int yIterations = 0;
         for(int i = 0; i < maxWorldDimension; i++)
         {
             for(int j = 0; j < maxWorldDimension; j++)
@@ -54,21 +59,16 @@ public class TerrainGenerator : MonoBehaviour
                 {
                     for(int x = 0; x < width; x++)
                     {
-                        heights[i, j][y, x] = Mathf.PerlinNoise(i * height + y, j * width + x);
+                        float perlinY = ((i * height + y - yIterations) * (1.0f / (height * maxWorldDimension))) * perlinSampleSize;
+                        float perlinX = ((j * width + x - xIterations) * (1.0f / (width * maxWorldDimension))) * perlinSampleSize;
+                        heights[i, j][y, x] = Mathf.PerlinNoise(perlinY, perlinX);
                     }
                 }
+                xIterations++;
             }
+            xIterations = 0;
+            yIterations++;
         }
-        string toPrint = "";
-        for(int i = 0; i < height; i++)
-        {
-            for(int j = 0; j < width; j++)
-            {
-                toPrint += heights[0, 0][i, j] + "  ";
-            }
-            toPrint += "\n";
-        }
-        Debug.Log(toPrint);
     }
 
     void Update()
@@ -170,14 +170,16 @@ public class TerrainGenerator : MonoBehaviour
 
         isLoading = true;
         
-        int baseX, baseY;
-        GetHeightBases(x, y, out baseX, out baseY);
         TerrainData terrainData = new TerrainData();
-        terrainData.size = new Vector3(tileWidth, maxHeight, tileHeight);
         terrainData.heightmapResolution = heightMapResolution;
-        terrainData.SetHeights(baseX, baseY, heights[y, x]);
-        Terrain terrain = Terrain.CreateTerrainGameObject(terrainData).GetComponent<Terrain>();
+        terrainData.size = new Vector3(terrainData.size.x, maxHeight, terrainData.size.z);
+        terrainData.SetHeights(0, 0, heights[y, x]);
+        GameObject root = Terrain.CreateTerrainGameObject(terrainData);
+        Terrain terrain = root.GetComponent<Terrain>();
         terrain.gameObject.AddComponent<TeleportAreaTerrain>();
+        terrain.transform.position = new Vector3(terrainData.size.x * x, 0.0f, terrainData.size.z * y);
+        zone.terrain = terrain;
+        zone.root = root;
 
         // Hookup neighboring terrains so there are no seams in the LOD
         for (int yi = Mathf.Max(y - 1, 0); yi < Mathf.Min(y + 2, maxWorldDimension); yi++)
@@ -205,7 +207,7 @@ public class TerrainGenerator : MonoBehaviour
 
         Zone zone = zones[y, x];
         zone.loaded = false;
-        Destroy(zone.terrain);
+        Destroy(zone.root);
         zone.terrain = null;
    
         yield return 0;
@@ -223,38 +225,5 @@ public class TerrainGenerator : MonoBehaviour
         }
 
         return null;
-    }
-
-    void GetHeightBases(int x, int y, out int baseX, out int baseY)
-    {
-        if (x + 1 < maxWorldDimension && zones[y, x + 1].loaded)
-        {
-            baseY = zones[y, x + 1].yBase;
-            int width = zones[y, x + 1].terrain.terrainData.heightmapWidth;
-            baseX = zones[y, x + 1].xBase - width;
-        }
-        else if ( x - 1 >= 0 && zones[y, x - 1].loaded)
-        {
-            baseY = zones[y, x - 1].yBase;
-            int width = zones[y, x - 1].terrain.terrainData.heightmapWidth;
-            baseX = zones[y, x - 1].xBase + width;
-        }
-        else if ( y + 1 < maxWorldDimension && zones[y + 1, x].loaded)
-        {
-            baseX = zones[y + 1, x].xBase;
-            int height = zones[y + 1, x].terrain.terrainData.heightmapHeight;
-            baseY = zones[y + 1, x].yBase - height;
-        }
-        else if (y - 1 >= 0 && zones[y - 1, x].loaded)
-        {
-            baseX = zones[y - 1, x].xBase;
-            int height = zones[y - 1, x].terrain.terrainData.heightmapHeight;
-            baseY = zones[y - 1, x].yBase + height;
-        }
-        else
-        {
-            baseY = 0;
-            baseX = 0;
-        }
     }
 }
