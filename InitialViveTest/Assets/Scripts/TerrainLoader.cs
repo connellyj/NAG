@@ -13,7 +13,6 @@ public class TerrainLoader : MonoBehaviour {
 
     private Zone[][] zones;
     private bool isLoading = false;
-    private bool isUnloading = false;
 
     public class Zone
     {
@@ -170,8 +169,6 @@ public class TerrainLoader : MonoBehaviour {
 
     IEnumerator UnloadZone(int x, int y)
     {
-        isUnloading = true;
-
         Zone zone = zones[y][x];
         zone.loaded = false;
 
@@ -184,8 +181,6 @@ public class TerrainLoader : MonoBehaviour {
         zone.root = null;
 
         yield return 0;
-
-        isUnloading = false;
     }
 
     private static string GetPrefix(string prefix, string postfix, int x, int y)

@@ -14,15 +14,6 @@ namespace Valve.VR.InteractionSystem
     //-------------------------------------------------------------------------
     public class TeleportAreaTerrain : TeleportMarkerBase
     {
-        //Public properties
-        public Bounds meshBounds { get; private set; }
-
-        //Private data
-        private int tintColorId = 0;
-        private Color visibleTintColor = Color.clear;
-        private Color highlightedTintColor = Color.clear;
-        private Color lockedTintColor = Color.clear;
-        private bool highlighted = false;
 
         //-------------------------------------------------
         public override bool ShouldActivate(Vector3 playerPosition)

@@ -7,6 +7,7 @@ public class DrawRaycast : MonoBehaviour
     private LineRenderer lr;
     private GameObject sphere;
     private Player player;
+    private static readonly float noHitOffset = 200f;
 
     Transform reference
     {
@@ -50,9 +51,6 @@ public class DrawRaycast : MonoBehaviour
         var t = reference;
         if (t == null)
             return;
-
-        // Get the current Y position of the reference space
-        float refY = t.position.y;
         
         // create a Ray from the origin of the controller in the direction that the controller is pointing
         Ray ray = new Ray(player.leftHand.transform.position, player.leftHand.transform.forward);
@@ -65,26 +63,30 @@ public class DrawRaycast : MonoBehaviour
         TerrainCollider tc = Terrain.activeTerrain.GetComponent<TerrainCollider>();
         hasGroundTarget = tc.Raycast(ray, out hitInfo, 1000f);
         dist = hitInfo.distance;
-        if (hasGroundTarget) drawLine(player.leftHand.transform.position, hitInfo.point);
+        if (hasGroundTarget)
+        {
+            sphere.GetComponent<Renderer>().material.color = Color.cyan;
+            drawLine(player.leftHand.transform.position, hitInfo.point);
+        }
         else
         {
-            lr.enabled = false;
-            sphere.SetActive(false);
+            sphere.GetComponent<Renderer>().material.color = Color.red;
+            drawLine(player.leftHand.transform.position, player.leftHand.transform.position + player.leftHand.transform.forward * noHitOffset);
         }
     }
 
     private void drawLine(Vector3 start, Vector3 end)
     {
-        lr.enabled = true;
         sphere.SetActive(true);
-        lr.startWidth = 0.05f;
+        lr.enabled = true;
+        lr.startWidth = 0.005f;
         lr.endWidth = 0.1f;
         lr.SetPosition(0, start);
         lr.SetPosition(1, end);
 
         sphere.transform.position = end;
 
-        float sizeOnScreen = 10;
+        float sizeOnScreen = 5;
         Vector3 a = Camera.main.WorldToScreenPoint(sphere.transform.position);
         Vector3 b = new Vector3(a.x, a.y + sizeOnScreen, a.z);
 

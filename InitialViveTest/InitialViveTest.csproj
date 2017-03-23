@@ -75,24 +75,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="InitialViveTest.Plugins.csproj">
-      <Project>{CE64B0D3-CD68-2615-131B-FD555BAB73EF}</Project>
-      <Name>InitialViveTest.Plugins</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Assets\Scripts\DrawRaycast.cs" />
-    <Compile Include="Assets\Scripts\Move.cs" />
-    <Compile Include="Assets\Scripts\Teleport.cs" />
+    <Compile Include="Assets\Scripts\StandardAssets\GlobalFog.cs" />
+    <Compile Include="Assets\Scripts\StandardAssets\PostEffectsBase.cs" />
+    <Compile Include="Assets\Scripts\SteamVR\SteamVR_Teleporter.cs" />
+    <Compile Include="Assets\Scripts\SteamVR\SteamVR_TrackedController.cs" />
     <Compile Include="Assets\Scripts\TeleportAreaTerrain.cs" />
     <Compile Include="Assets\Scripts\TerrainGenerator.cs" />
     <Compile Include="Assets\Scripts\TerrainLoader.cs" />
-    <Compile Include="Assets\SteamVR\Extras\SteamVR_GazeTracker.cs" />
-    <Compile Include="Assets\SteamVR\Extras\SteamVR_LaserPointer.cs" />
-    <Compile Include="Assets\SteamVR\Extras\SteamVR_Teleporter.cs" />
-    <Compile Include="Assets\SteamVR\Extras\SteamVR_TestThrow.cs" />
-    <Compile Include="Assets\SteamVR\Extras\SteamVR_TestTrackedCamera.cs" />
-    <Compile Include="Assets\SteamVR\Extras\SteamVR_TrackedController.cs" />
     <Compile Include="Assets\SteamVR\InteractionSystem\Core\Scripts\BodyCollider.cs" />
     <Compile Include="Assets\SteamVR\InteractionSystem\Core\Scripts\CircularDrive.cs" />
     <Compile Include="Assets\SteamVR\InteractionSystem\Core\Scripts\ComplexThrowable.cs" />
@@ -191,22 +181,13 @@
     <Compile Include="Assets\SteamVR\Scripts\SteamVR_Utils.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\Standard Assets\CrossPlatformInput\CrossPlatformInputGuidelines.txt" />
-    <None Include="Assets\Standard Assets\Environment\Water (Basic)\Shaders\FXWaterBasic.shader" />
-    <None Include="Assets\Standard Assets\Environment\Water\Water\Shaders\FXWaterPro.shader" />
-    <None Include="Assets\Standard Assets\Environment\Water\Water4\Shaders\FXWater4Advanced.shader" />
-    <None Include="Assets\Standard Assets\Environment\Water\Water4\Shaders\FXWater4Simple.shader" />
-    <None Include="Assets\Standard Assets\Environment\Water\Water4\Shaders\WaterInclude.cginc" />
+    <None Include="Assets\Scripts\StandardAssets\GlobalFog.shader" />
     <None Include="Assets\SteamVR\InteractionSystem\Core\Shaders\SeeThru.shader" />
     <None Include="Assets\SteamVR\InteractionSystem\Core\Shaders\Silhouette.shader" />
     <None Include="Assets\SteamVR\InteractionSystem\Hints\Shaders\ControllerButtonHints.shader" />
     <None Include="Assets\SteamVR\InteractionSystem\Readme_InteractionSystem.txt" />
     <None Include="Assets\SteamVR\InteractionSystem\Teleport\Shaders\Highlight.shader" />
-    <None Include="Assets\SteamVR\Resources\SteamVR_AlphaOut.shader" />
-    <None Include="Assets\SteamVR\Resources\SteamVR_ClearAll.shader" />
-    <None Include="Assets\SteamVR\Resources\SteamVR_ColorOut.shader" />
     <None Include="Assets\SteamVR\Resources\SteamVR_Fade.shader" />
-    <None Include="Assets\SteamVR\Resources\SteamVR_SphericalProjection.shader" />
     <None Include="Assets\SteamVR\readme.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
